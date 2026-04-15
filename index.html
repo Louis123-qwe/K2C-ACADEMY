@@ -486,80 +486,151 @@
   </div>
   <p class="input-hint">Powered by K2Ç Academy AI · Responses are based on Digital Nathy's real story and course content</p>
 </div>
-
 <script>
-const SYSTEM_PROMPT = `You are the Digital Nathy AI assistant for K2Ç Academy. You speak in Digital Nathy's voice — warm, direct, like a knowledgeable big brother who has been where the visitor is and found a way out. You are confident, honest and practical. You never hype or exaggerate.
+/**
+ * K2Ç ACADEMY ROBUST ENGINE
+ */
 
-Here is everything you know:
+// 1. Configuration & Links
+const COURSE_URL = "https://oniahemmanuel.systeme.io/da36229f";
+const WHATSAPP_NUMBER = "2349164266235"; // REPLACE THIS with your actual number (no + or 0)
+const PRELOADED_MSG = encodeURIComponent("Hello Digital Nathy, I'm interested in the K2Ç Academy. I'd like to ask a few questions before I enroll.");
+const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${PRELOADED_MSG}`;
 
-ABOUT DIGITAL NATHY:
-- Full name: Oniah Emmanuel (known online as Digital Nathy)
-- Nigerian digital marketing strategist, coach and founder of K2Ç Academy
-- His journey: Started as a university student trying to ease financial burden on his parents. Attended multiple trainings — copywriting with Boss Woozy, graphic design, affiliate marketing — but earned nothing. His first online class had 200 attendees and zero sales. A student coached him in front of everyone on how to run a class properly — which embarrassed him but taught him that authenticity sells. He was copy-pasting from his mentor without understanding. After attending John Obidi's Design the Decade program, he gained clarity and built K2Ç Academy from the insight that thousands of people have knowledge but no system to earn from it.
-- He has made real sales: Selar payouts, Amazon KDP royalties, affiliate commissions including international sales in CFA currency from Cameroon.
-- Personal philosophy: Impact over income. Execution over theory. Integrity over hype. Small wins lead to big breakthroughs.
-- Communication style: Big brother meets strategist. Warm and relatable but structured and practical.
+// 2. Knowledge Base with Regex Patterns
+const KNOWLEDGE_BASE = [
+  {
+    pattern: /(who|nathy|founder|onniah|owner|creator)/i,
+    response: "I'm Oniah Emmanuel, popularly known as **Digital Nathy**. \n\nI’m a digital marketing strategist and the founder of K2Ç Academy. My story isn't one of 'overnight success.' I struggled, failed, and was even embarrassed in front of 200 people before I figured out the **Knowledge to Cash** system. Now, I help others skip the struggle."
+  },
+  {
+    pattern: /(price|cost|how much|amount|fee|naira|pay|payment|buy|purchase|enroll|join)/i,
+    response: `The **Zero to First Online Sale System** is currently at an Early Bird price of **₦9,997** for the first 20 students. \n\nAfter that, the price goes up to **₦15,000**. \n\n**Ready to start?** \n[CLICK HERE TO ENROLL INSTANTLY](${COURSE_URL})`
+  },
+  {
+    pattern: /(beginner|newbie|start|no experience|don't know|first time|laptop|computer)/i,
+    response: "You don't need a laptop or previous experience. If you can use WhatsApp and TikTok, you have everything you need. This course is a step-by-step 'hold-you-by-the-hand' guide for beginners in Nigeria."
+  },
+  {
+    pattern: /(bonus|extra|freebies|gift|added|community|group)/i,
+    response: "You're getting over **₦50,000** worth of bonuses for free: \n• The Quick Start Action Guide \n• Done-For-You Swipe Files \n• 30-Day Content Calendar \n• Lifetime WhatsApp Community Access \n• Personal Product Review (First 15 students only!)."
+  },
+  {
+    pattern: /(learn|module|teach|inside|content|curriculum|what is in)/i,
+    response: "We cover 7 modules: Mindset, The Knowledge Audit (finding what to sell), The Clarity Blueprint, Creating your digital product in 48 hours, The WhatsApp Sales Machine, The 7-Day Launch Plan, and Scaling your income."
+  },
+  {
+    pattern: /(whatsapp|chat|talk|call|phone|contact|speak|personally)/i,
+    response: `I love your energy! If you'd like to chat with me or my team personally on WhatsApp, click the link below: \n\n[CHATS WITH NATHY ON WHATSAPP](${WHATSAPP_LINK})`
+  },
+  {
+    pattern: /(scam|real|work|legit|proof|result|evidence)/i,
+    response: "I value integrity over hype. K2Ç stands for **Knowledge to Cash**—we teach real skills, not 'get rich quick' schemes. I show my real Selar and international payouts inside the course. It works if you work it!"
+  }
+];
 
-ABOUT K2Ç ACADEMY:
-- K2Ç stands for Knowledge to Cash
-- Tagline: From Knowledge to Cash — Stop Learning. Start Earning.
-- Mission: Help beginners — especially in Nigeria — move from confusion and information overload to clarity, execution and their first real online income.
-- Positioning: No-hype, results-driven, beginner-friendly, execution-first. Deliberately different from scam-adjacent online income content common in the Nigerian space.
-- Platforms: WhatsApp, TikTok, Facebook
-- Handle: @digitalnathy
+const DEFAULT_RESPONSE = "That's a great point! To give you the best answer, could you clarify if you're asking about the **course price**, **how to start as a beginner**, or if you want to **chat on WhatsApp**? \n\nYou can also click the buttons above!";
 
-ABOUT THE COURSE:
-- Full name: The Zero to First Online Sale System
-- Price: ₦9,997 Early Bird (first 20 students). Rises to ₦15,000 after.
-- Format: 15 video lessons across 7 modules, screen-recorded, self-paced
-- Delivery: Selar.co
-- Target: Beginners in Nigeria with knowledge/skills but no system to monetize them
+let chatCount = 0;
 
-MODULES:
-- Module 0: Welcome — mindset, expectations, how to use the course
-- Module 1: The Knowledge Audit — discover what you already have that people will pay for
-- Module 2: The Clarity Blueprint — escape information overload, pick one path
-- Module 3: Your First Digital Product — create and list a product in 48 hours using free tools
-- Module 4: Your Sales System — WhatsApp Sales Machine, Facebook and TikTok captions
-- Module 5: Your First Sale Blueprint — 7-day launch plan, follow-up strategy
-- Module 6: Scale and Sustain — testimonials, multiple income streams, 30-day growth plan
+/**
+ * UI & LOGIC HANDLERS
+ */
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const text = input.value.trim();
 
-BONUSES (all free with the course):
-1. The Quick Start Action Guide
-2. The Knowledge Audit Worksheet
-3. The Done-For-You Swipe File (30 captions, scripts, DM templates)
-4. The 30-Day Content and Action Calendar
-5. Lifetime access to the private K2Ç Academy WhatsApp community with weekly Q&A
-6. Personal Product Review from Digital Nathy (first 15 students only)
-7. The WhatsApp Sales Conversation Guide (objection handling, DM scripts)
-Total bonus value: over ₦50,000
+  if (!text) return;
 
-STUDENT JOURNEY (6 stages):
-1. Seedling — just joined
-2. Learner — watching and applying
-3. Builder — product created, Selar store live
-4. Earner — first sale made
-5. Advocate — sharing results, earning affiliate commissions (25% per referral)
-6. Ambassador — Certified K2Ç Coach, runs bootcamps under the brand, earns 80% revenue
+  addMessage('user', text);
+  input.value = '';
+  input.style.height = 'auto';
+  sendBtn.disabled = true;
 
-TOOLS USED IN COURSE: Google Docs, Canva, Google Slides, phone screen recorder, Capcut, Selar.co — all free.
+  showTyping();
 
-HOW TO ANSWER:
-- Be warm, direct and conversational. Never robotic.
-- Keep answers focused and practical — 3 to 6 sentences for simple questions, slightly longer for complex ones.
-- Use line breaks to keep things readable on mobile.
-- If someone asks about buying, direct them to get the course on Selar.
-- If someone seems unsure, ask them one question to understand their situation better.
-- Never make up information. If you do not know something, say so honestly.
-- Always end responses with either a helpful next step, a question or encouragement.
-- Do not use bullet points unless listing multiple items. Prefer natural flowing sentences.`;
+  setTimeout(() => {
+    removeTyping();
+    const reply = findResponse(text);
+    addMessage('nathy', reply);
+    sendBtn.disabled = false;
+    
+    chatCount++;
+    if (chatCount % 3 === 0) showCTA();
+  }, 900);
+}
 
-let messages = [];
-let isLoading = false;
+function findResponse(input) {
+  for (let item of KNOWLEDGE_BASE) {
+    if (item.pattern.test(input)) {
+      return item.response;
+    }
+  }
+  return DEFAULT_RESPONSE;
+}
 
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+function addMessage(role, content) {
+  const container = document.getElementById('chatContainer');
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${role}`;
+  
+  const avatar = role === 'nathy' ? '🎓' : 'YOU';
+  const nameLabel = role === 'nathy' ? '<div class="msg-name">DIGITAL NATHY</div>' : '';
+  
+  msgDiv.innerHTML = `
+    <div class="msg-avatar ${role === 'nathy' ? 'nathy' : 'user-av'}">${avatar}</div>
+    <div class="msg-bubble">
+      ${nameLabel}
+      <div>${formatText(content)}</div>
+    </div>
+  `;
+  
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function formatText(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br/>')
+    .replace(/\[(.*?)\]\((.*?)\)/g, `<a href="$2" target="_blank" style="color:var(--yellow); font-weight:bold; text-decoration:underline;">$1</a>`);
+}
+
+function showTyping() {
+  const container = document.getElementById('chatContainer');
+  const div = document.createElement('div');
+  div.className = 'message nathy';
+  div.id = 'typingIndicator';
+  div.innerHTML = `
+    <div class="msg-avatar nathy">🎓</div>
+    <div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>
+  `;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function showCTA() {
+  const container = document.getElementById('chatContainer');
+  const card = document.createElement('div');
+  card.className = 'cta-card';
+  card.innerHTML = `
+    <h4>SECURE YOUR FUTURE</h4>
+    <p>Join the Zero to First Online Sale System today and get all bonuses worth ₦50,000+.</p>
+    <a href="${COURSE_URL}" target="_blank">GET INSTANT ACCESS →</a>
+  `;
+  container.appendChild(card);
+  container.scrollTop = container.scrollHeight;
+}
+
+function askTopic(q) {
+  document.getElementById('userInput').value = q;
+  sendMessage();
 }
 
 function handleKey(e) {
@@ -569,162 +640,17 @@ function handleKey(e) {
   }
 }
 
-function askTopic(question) {
-  document.getElementById('userInput').value = question;
-  sendMessage();
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
 
-function addMessage(role, content, isError = false) {
-  const container = document.getElementById('chatContainer');
-
-  if (isError) {
-    const div = document.createElement('div');
-    div.className = 'error-bubble';
-    div.textContent = content;
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-    return;
-  }
-
-  const msgDiv = document.createElement('div');
-  msgDiv.className = `message ${role}`;
-
-  const avatarDiv = document.createElement('div');
-  avatarDiv.className = `msg-avatar ${role === 'nathy' ? 'nathy' : 'user-av'}`;
-  avatarDiv.textContent = role === 'nathy' ? '🎓' : 'YOU';
-
-  const bubbleDiv = document.createElement('div');
-  bubbleDiv.className = 'msg-bubble';
-
-  if (role === 'nathy') {
-    const nameDiv = document.createElement('div');
-    nameDiv.className = 'msg-name';
-    nameDiv.textContent = 'DIGITAL NATHY';
-    bubbleDiv.appendChild(nameDiv);
-  }
-
-  const textDiv = document.createElement('div');
-  textDiv.innerHTML = formatMessage(content);
-  bubbleDiv.appendChild(textDiv);
-
-  msgDiv.appendChild(avatarDiv);
-  msgDiv.appendChild(bubbleDiv);
-  container.appendChild(msgDiv);
-  container.scrollTop = container.scrollHeight;
-}
-
-function formatMessage(text) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/\n\n/g, '<br/><br/>')
-    .replace(/\n/g, '<br/>');
-}
-
-function showTyping() {
-  const container = document.getElementById('chatContainer');
-  const div = document.createElement('div');
-  div.className = 'message nathy';
-  div.id = 'typingIndicator';
-
-  const avatarDiv = document.createElement('div');
-  avatarDiv.className = 'msg-avatar nathy';
-  avatarDiv.textContent = '🎓';
-
-  const bubbleDiv = document.createElement('div');
-  bubbleDiv.className = 'msg-bubble';
-
-  const typing = document.createElement('div');
-  typing.className = 'typing';
-  typing.innerHTML = '<span></span><span></span><span></span>';
-
-  bubbleDiv.appendChild(typing);
-  div.appendChild(avatarDiv);
-  div.appendChild(bubbleDiv);
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function removeTyping() {
-  const indicator = document.getElementById('typingIndicator');
-  if (indicator) indicator.remove();
-}
-
-async function sendMessage() {
-  const input = document.getElementById('userInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const text = input.value.trim();
-
-  if (!text || isLoading) return;
-
-  isLoading = true;
-  sendBtn.disabled = true;
-  input.value = '';
-  input.style.height = 'auto';
-
-  addMessage('user', text);
-  messages.push({ role: 'user', content: text });
-
-  showTyping();
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        messages: messages
-      })
-    });
-
-    const data = await response.json();
-    removeTyping();
-
-    if (data.content && data.content[0] && data.content[0].text) {
-      const reply = data.content[0].text;
-      messages.push({ role: 'assistant', content: reply });
-      addMessage('nathy', reply);
-
-      // Show CTA after 3 exchanges
-      if (messages.length >= 6 && messages.length % 6 === 0) {
-        showCTA();
-      }
-    } else {
-      addMessage('nathy', "I am having a moment — please try asking again. 🙏", false);
-    }
-  } catch (err) {
-    removeTyping();
-    addMessage('', 'Something went wrong. Please check your connection and try again.', true);
-  }
-
-  isLoading = false;
-  sendBtn.disabled = false;
-  input.focus();
-}
-
-function showCTA() {
-  const container = document.getElementById('chatContainer');
-  const card = document.createElement('div');
-  card.className = 'cta-card';
-  card.innerHTML = `
-    <h4>READY TO GET STARTED?</h4>
-    <p>Join the Zero to First Online Sale System — ₦9,997 Early Bird. First 20 students only.</p>
-    <a href="https://selar.co/digitalnathy" target="_blank">GET INSTANT ACCESS →</a>
-  `;
-  container.appendChild(card);
-  container.scrollTop = container.scrollHeight;
-}
-
-// Welcome message on load
-window.addEventListener('load', () => {
+window.onload = () => {
   setTimeout(() => {
-    const welcome = `Hey! Welcome to K2Ç Academy. 👋\n\nI am the Digital Nathy AI — here to answer any question you have about the course, K2Ç Academy or how to start earning online from what you already know.\n\nWhat would you like to know?`;
-    addMessage('nathy', welcome);
-    messages.push({ role: 'assistant', content: welcome });
-  }, 600);
-});
+    addMessage('nathy', "Welcome to the Academy! 🎓\n\nI'm the Digital Nathy AI. Are you ready to stop just learning and start earning from what you know? \n\nAsk me anything about the course or how to get started!");
+  }, 500);
+};
+
 </script>
 </body>
 </html>
